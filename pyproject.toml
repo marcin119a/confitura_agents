@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "faq-agent"
+version = "0.1.0"
+description = "Example Air airline FAQ agent built on the OpenAI Agents SDK"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp>=2.0",
+    "openai-agents>=0.21.0",
+    "pydantic-settings>=2.14.2",
+]
+
+[project.optional-dependencies]
+# Microphone/speaker I/O for faq-agent-realtime; needs the system PortAudio
+# library (e.g. `brew install portaudio` on macOS).
+voice = ["sounddevice>=0.4.6"]
+
+[project.scripts]
+faq-agent = "faq_agent.agents.faq.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
