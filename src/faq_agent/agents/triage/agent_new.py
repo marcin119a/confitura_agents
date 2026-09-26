@@ -5,7 +5,7 @@ from faq_agent.guardrails import create_off_topic_guardrail
 from agents.mcp import MCPServerStdio
 
 from faq_agent.agents.faq import create_faq_agent
-from faq_agent.agents.reservation import create_reservation_agent
+from faq_agent.agents.reservation import create_reservation_agent, tripwire_message
 from faq_agent.config import Settings
 
 TRIAGE_INSTRUCTIONS = (
@@ -47,6 +47,7 @@ def create_triage_agent(settings: Settings, reservation_server: MCPServerStdio) 
                     "Ask the FAQ agent about baggage, check-in, fees, refunds and other "
                     "airline rules and procedures. Input: the passenger's question."
                 ),
+                failure_error_function=tripwire_message,
             ),
             reservation_agent.as_tool(
                 tool_name="ask_reservation_agent",
@@ -55,6 +56,7 @@ def create_triage_agent(settings: Settings, reservation_server: MCPServerStdio) 
                     "destination and travel date, all in one message. Returns the "
                     "reservation number."
                 ),
+                failure_error_function=tripwire_message,
             ),
         ],
         input_guardrails=[
