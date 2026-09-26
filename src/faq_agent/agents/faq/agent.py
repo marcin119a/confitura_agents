@@ -3,7 +3,7 @@ from __future__ import annotations
 from agents import Agent, AsyncOpenAI, OpenAIResponsesModel
 
 from faq_agent.config import Settings
-from faq_agent.agents.tools import search_faq
+from faq_agent.tools import search_faq
 
 INSTRUCTIONS = (
     "Jesteś asystentem obsługi klienta linii lotniczej Example Air. "

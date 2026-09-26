@@ -21,6 +21,7 @@ voice = ["sounddevice>=0.4.6"]
 
 [project.scripts]
 faq-agent = "faq_agent.agents.faq.cli:main"
+faq-agent-handoff = "faq_agent.agents.triage.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
