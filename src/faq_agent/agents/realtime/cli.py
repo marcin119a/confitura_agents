@@ -13,7 +13,7 @@ import sys
 from agents.realtime import RealtimeRunner
 
 from faq_agent.agents.realtime.agent import create_realtime_agent
-from faq_agent.agents.realtime.audio import play_and_print, stream_microphone
+from faq_agent.agents.realtime.audio import EchoGate, play_and_print, stream_microphone
 from faq_agent.agents.reservation import create_reservation_server
 from faq_agent.config import Settings
 from faq_agent.observability import configure_tracing
@@ -43,9 +43,11 @@ async def _amain() -> None:
             },
         )
         async with await runner.run(model_config={"api_key": settings.openai_api_key}) as session:
-            mic_task = asyncio.create_task(stream_microphone(session))
+            # Keeps the agent from hearing itself through the speakers.
+            gate = EchoGate()
+            mic_task = asyncio.create_task(stream_microphone(session, gate))
             try:
-                await play_and_print(session)
+                await play_and_print(session, gate)
             finally:
                 mic_task.cancel()
                 with contextlib.suppress(asyncio.CancelledError):
