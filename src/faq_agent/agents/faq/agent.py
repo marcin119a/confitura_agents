@@ -3,6 +3,7 @@ from __future__ import annotations
 from agents import Agent, AsyncOpenAI, OpenAIResponsesModel
 
 from faq_agent.config import Settings
+from faq_agent.guardrails import no_card_number
 from faq_agent.tools import search_faq
 
 INSTRUCTIONS = (
@@ -31,4 +32,5 @@ def create_faq_agent(settings: Settings) -> Agent:
         instructions=INSTRUCTIONS,
         model=OpenAIResponsesModel(model=settings.model_name, openai_client=client),
         tools=[search_faq],
+        output_guardrails=[no_card_number],
     )
