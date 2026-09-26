@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from agents import function_tool
 
-from . import knowledge_base
+from ..agents.tools import knowledge_base
 
 
 @function_tool

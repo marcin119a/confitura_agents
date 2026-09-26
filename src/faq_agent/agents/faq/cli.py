@@ -21,7 +21,6 @@ from agents import (
 
 from faq_agent.agents.faq.agent import create_faq_agent
 from faq_agent.config import Settings
-from faq_agent.guardrails import INPUT_BLOCKED, OUTPUT_BLOCKED
 from faq_agent.observability import configure_tracing
 
 
