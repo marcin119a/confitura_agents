@@ -27,7 +27,7 @@ from agents import (
 )
 
 from faq_agent.agents.reservation import create_reservation_server
-from faq_agent.agents.triage.agent import create_triage_agent
+from faq_agent.agents.triage.agent_new import create_triage_agent
 from faq_agent.config import Settings
 from faq_agent.observability import configure_tracing
 
