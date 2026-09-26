@@ -26,12 +26,7 @@ from faq_agent.observability import configure_tracing
 
 def _answer(agent: Agent, question: str, session: SQLiteSession | None = None) -> str:
     """Runs the agent; a guardrail tripwire turns into a fixed message."""
-    try:
-        return Runner.run_sync(agent, question, session=session).final_output
-    except InputGuardrailTripwireTriggered:
-        return INPUT_BLOCKED
-    except OutputGuardrailTripwireTriggered:
-        return OUTPUT_BLOCKED
+    return Runner.run_sync(agent, question, session=session).final_output
 
 
 def main() -> None:
