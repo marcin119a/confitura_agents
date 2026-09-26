@@ -23,6 +23,7 @@ from agents import (
     OutputGuardrailTripwireTriggered,
     RunConfig,
     Runner,
+    Session,
 )
 
 from faq_agent.agents.reservation import create_reservation_server
@@ -31,13 +32,19 @@ from faq_agent.config import Settings
 from faq_agent.observability import configure_tracing
 
 
-async def _run(question: str, settings: Settings) -> str:
+async def _run(question: str, settings: Settings, session: Session | None) -> str:
     async with create_reservation_server() as reservation_server:
         try:
             result = await Runner.run(
                 create_triage_agent(settings, reservation_server),
                 question,
-                run_config=RunConfig(workflow_name="Handoff Workflow"),
+                session=session,
+                run_config=RunConfig(
+                    workflow_name="Handoff Workflow",
+                    # Every turn is a separate trace; the group id ties the
+                    # turns of one conversation together in the traces view.
+                    group_id=session.session_id if session else None,
+                ),
             )
         except InputGuardrailTripwireTriggered:
             return ""
@@ -46,8 +53,18 @@ async def _run(question: str, settings: Settings) -> str:
     return result.final_output
 
 
-def ask(question: str, settings: Settings | None = None) -> str:
-    """Runs the triage agent, which hands off to the FAQ or reservation agent, and returns the answer."""
+def ask(
+    question: str,
+    settings: Settings | None = None,
+    session: Session | None = None,
+) -> str:
+    """Runs the triage agent, which hands off to the FAQ or reservation agent, and returns the answer.
+
+    Pass the same `session` to consecutive calls to keep the conversation
+    history. Every turn starts at the triage agent, which sees that history
+    and routes again — the specialists can't hand back, so staying with the
+    last agent would trap a follow-up question in the wrong one.
+    """
     settings = settings or Settings()
     configure_tracing(settings.openai_api_key)
-    return asyncio.run(_run(question, settings))
+    return asyncio.run(_run(question, settings, session))
