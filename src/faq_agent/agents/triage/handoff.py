@@ -30,6 +30,7 @@ from faq_agent.agents.reservation import create_reservation_server
 from faq_agent.agents.triage.agent_new import create_triage_agent
 from faq_agent.config import Settings
 from faq_agent.observability import configure_tracing
+from faq_agent.guardrails import INPUT_BLOCKED, OUTPUT_BLOCKED
 
 
 async def _run(question: str, settings: Settings, session: Session | None) -> str:
@@ -47,9 +48,9 @@ async def _run(question: str, settings: Settings, session: Session | None) -> st
                 ),
             )
         except InputGuardrailTripwireTriggered:
-            return ""
+            return INPUT_BLOCKED
         except OutputGuardrailTripwireTriggered:
-            return ""
+            return OUTPUT_BLOCKED
     return result.final_output
 
 

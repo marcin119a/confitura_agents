@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from agents import Agent, AsyncOpenAI, OpenAIResponsesModel
+from faq_agent.guardrails import create_off_topic_guardrail
 from agents.mcp import MCPServerStdio
 
 from faq_agent.agents.faq import create_faq_agent
@@ -56,4 +57,7 @@ def create_triage_agent(settings: Settings, reservation_server: MCPServerStdio) 
                 ),
             ),
         ],
+        input_guardrails=[
+            create_off_topic_guardrail(settings),
+        ]
     )
